@@ -27,9 +27,8 @@ jobs:
     - name: Terraform debug
       id: debug
       run: |
-        tree $GITHUB_WORKSPACE
-        ls -l $GITHUB_WORKSPACE
-      shell: bash
+        tree $${GITHUB_WORKSPACE}
+        ls -l $${GITHUB_WORKSPACE}
     - name: Terraform Init
       id: init
       run: terraform init
