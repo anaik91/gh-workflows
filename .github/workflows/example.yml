@@ -24,20 +24,8 @@ jobs:
       with:
         terraform_version: 1.1.9
         terraform_wrapper: false
-    - name: Terraform debug
-      id: debug
-      run: |
-        tree $${GITHUB_WORKSPACE}
-        ls -l $${GITHUB_WORKSPACE}
     - name: Terraform Init
       id: init
       run: terraform init
-      working-directory: terraform/github-runners # Use your environment folder
-      shell: bash
-    - name: Terraform Plan
-      id: plan
-      run: |
-        echo "${{ secrets.TFVARS }}" > terraform.tfvars
-        terraform plan -input=false -no-color -out tf.plan
       working-directory: terraform/github-runners # Use your environment folder
       shell: bash
