@@ -33,3 +33,10 @@ jobs:
         terraform init -backend-config=backend.tfvars
       working-directory: ./terraform/github-runners # Use your environment folder
       shell: bash
+    - name: Terraform Plan
+      id: plan
+      run: |
+        echo ${{ secrets.SA_EMAIL }} > terraform.tfvars
+        terraform plan
+      working-directory: ./terraform/github-runners # Use your environment folder
+      shell: bash
