@@ -19,7 +19,20 @@ jobs:
       with:
         workload_identity_provider: ${{ secrets.PROVIDER_NAME }} # this is the output provider_name from the TF module
         service_account: ${{ secrets.SA_EMAIL }} # this is a SA email configured using the TF module with access to YOUR-GCS-BUCKET
-    - id: 'list_buckets_contents'
-      run: |-
-        curl https://storage.googleapis.com/storage/v1/b/myportalbucket/o \
-          --header "Authorization: Bearer ${{ steps.auth.outputs.access_token }}"
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.1.9
+        terraform_wrapper: false
+    - name: Terraform Init
+      id: init
+      run: terraform init
+      working-directory: ./terraform/github-runners # Use your environment folder
+      shell: bash
+    - name: Terraform Plan
+      id: plan
+      run: |
+        echo "${{ secrets.TFVARS }}" > ./terraform/github-runners/terraform.tfvars
+        terraform plan -input=false -no-color -out tf.plan
+      working-directory: ./terraform/github-runners # Use your environment folder
+      shell: bash
