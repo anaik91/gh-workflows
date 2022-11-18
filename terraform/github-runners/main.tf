@@ -33,3 +33,22 @@
   startup_script    = file("${path.cwd}/scripts/startup.sh")
   shutdown_script   = file("${path.cwd}/scripts/shutdown.sh")
 }
+
+resource "null_resource" "wait_for_runner" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+    python3 ${path.module}/wait_for_runner.py \
+        --auth_token ${var.gh_token} \
+        --repo_owner ${var.repo_owner} \
+        --repo ${var.repo_name} 
+    EOT
+  }
+
+  depends_on = [
+    module.gcve_github_actions_runners,
+  ]
+}
