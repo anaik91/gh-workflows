@@ -10,15 +10,16 @@ def _has_active_workers(auth_token,owner,repo):
         "Accept" : "application/vnd.github+json"
     }
     r = requests.get(url,headers=headers)
-    print(r.status_code)
     if r.status_code != 200:
         print("Error Unable to list Self hosted runners")
         print(f"Error : {r.text}")
         sys.exit(1)
     worker_info=r.json()
     if worker_info['total_count'] > 0 :
-        if worker_info['runners'][0]['status'] == 'online':
-            return True,worker_info
+        for each_worker in worker_info['runners']:
+            if each_worker['status'] == 'online':
+                return True,worker_info
+        return False,None
     else:
         return False,None
 
@@ -32,7 +33,7 @@ def wait_for_worker(auth_token,owner,repo):
             print(f"Active Runner Detected : {worker_info['runners'][0]['name']}")
             break
         else:
-            print('No Active Runner Detected')
+            print(f"No Active Runner Detected ! sleeping for {sleep_time} seconds")
             retry+=1
             sleep(sleep_time)
 
